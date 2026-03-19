@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # Your Jupyter environment for the Vector Flood Assessor logic
+  jupyter:
+    build: .
+    container_name: flood_lab
+    ports:
+      - "8888:8888"
+    volumes:
+      - .:/app
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    # This ensures your imports work as soon as the container starts
+    command: jupyter notebook --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token=''
+
+  # Bonus: A PostGIS database to practice "Spatial Indexing"
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: geospatial_db
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=flood
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  pg_data:
